@@ -6,6 +6,7 @@ import { InvoicesTableSkeleton } from '@/app/ui/skeletons';
 import { fetchCustomersPages } from '@/app/lib/data';
 import { Suspense } from 'react';
 import { Props } from '@/app/lib/types';
+import { CreateCustomer } from '@/app/ui/customers/buttons';
 
 
 export default async function Page({ searchParams }: Props) {
@@ -19,6 +20,7 @@ export default async function Page({ searchParams }: Props) {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search customers..." />
+        <CreateCustomer/>
       </div>
       <Suspense key={query + Number(currentPage)} fallback={<InvoicesTableSkeleton />}>
         <Table query={query} currentPage={Number(currentPage)} />
