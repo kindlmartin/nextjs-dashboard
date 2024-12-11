@@ -7,10 +7,7 @@ import { z } from 'zod';
 
 const CustomerFormSchema = z.object({
   id: z.string(),
-  name: z.string({
-    required_error: 'Please fill customer name.',
-    invalid_type_error: 'Please fill customer name.'
-  }),
+  name: z.string().min(1, 'Please fill customer name.'),
   email: z.string().email({ message: 'Please fill valid email.' })
 });
 
