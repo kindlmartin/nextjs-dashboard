@@ -1,18 +1,17 @@
+'use server';
+
 import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { z } from 'zod';
 
-
 const CustomerFormSchema = z.object({
   id: z.string(),
   name: z.string({
     required_error: 'Please fill customer name.',
-    invalid_type_error: 'Please fill customer name.',
+    invalid_type_error: 'Please fill customer name.'
   }),
-  email: z.coerce
-    .number()
-    .gt(0, { message: 'Please enter an amount greater than $0.' }),
+  email: z.string().email({ message: 'Please fill valid email.' })
 });
 
 const CreateCustomer = CustomerFormSchema.omit({ id: true });
@@ -27,7 +26,6 @@ export type State = {
 
 export async function createCustomer(prevState: State, formData: FormData) {
   const rawFormData = Object.fromEntries(formData.entries());
-
   const validatedFields = CreateCustomer.safeParse(rawFormData);
 
   if (!validatedFields.success) {
@@ -37,13 +35,14 @@ export async function createCustomer(prevState: State, formData: FormData) {
     };
   }
 
-  const { name, email } = validatedFields.data;
-
   try {
+    const { name, email } = validatedFields.data;
+
     await sql`
-    INSERT INTO customers (name, email)
-    VALUES (${name}, ${email})
-  `;
+        INSERT INTO customers (name, email, image_url)
+        VALUES (${name}, ${email}, '/customers/balazs-orban.png')
+    `;
+
   } catch (e) {
     return {
       message: 'Database Error: Failed to Create Customer.',
